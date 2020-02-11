@@ -1,0 +1,88 @@
+<div class="container">
+  <div class="header mat-elevation-z1">
+    <div class="header-text">
+      <div class="head-marker">
+        <mat-icon matTooltip="{{apiIconToolTip}}">{{apiIcon}}</mat-icon>
+      </div>{{activeApi.name}}
+      <span class="spacer"></span>
+
+      <span class="tool-bar">
+        <span class="bar-separator" ></span>
+        <a class="link clickable" href="{{activeApi.group.specs}}" target="_blank" *ngIf="activeApi.group.hasSpecs">
+          <mat-icon>description</mat-icon>
+        </a>
+        <div *ngIf="!activeApi.group.hasSpecs && !activeApi.isProxy" matTooltip="Specs not present" class="notPresent notAllowed">
+          <mat-icon  class="notPresent">description</mat-icon>
+        </div>
+      </span>
+    </div>
+  </div>
+  <mat-card class="component">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>extensions</mat-icon>&nbsp;&nbsp;Plugins
+      </mat-card-title>
+    </mat-card-header>
+    <div fxLayout="row" fxLayoutGap="15px" *ngIf="plugins">
+      <div class="component-item" fxFlex="25%" fxLayout="column" *ngIf="plugins.oAuth2">
+        <div class="component-title">
+          <mat-icon>security</mat-icon> OAuth2
+        </div>
+        <div class="component-sub-title">Scopes</div>
+        <ul class="list colored">
+          <li *ngFor="let apikey of plugins.oAuth2.scopes">
+            {{apikey}}
+          </li>
+        </ul>
+      </div>
+      <div class="component-item" fxFlex="25%" fxLayout="column" *ngIf="plugins.keyAuth">
+        <div class="component-title">
+          <mat-icon>vpn_key</mat-icon>
+          <span matBadge="{{plugins.keyAuth.keyNames.length}}" matBadgeSize="small" matBadgeOverlap="false">Api Key</span>
+        </div>
+        <div class="component-sub-title">Key names</div>
+        <ul class="list colored">
+          <li *ngFor="let apikey of plugins.keyAuth.keyNames">
+            {{apikey}}
+          </li>
+        </ul>
+      </div>
+      <div class="component-item" fxFlex="25%" fxLayout="column" *ngIf="plugins.acl">
+        <div class="component-title">
+          <mat-icon>group</mat-icon>
+          <span matBadge="{{plugins.acl.whitelist.length}}" matBadgeSize="small" matBadgeOverlap="false">ACL</span>
+        </div>
+        <div class="component-sub-title">Groups</div>
+        <ul class="list colored">
+          <li *ngFor="let access of plugins.acl.whitelist">
+            {{access}}
+          </li>
+        </ul>
+      </div>
+      <div class="component-item" fxFlex="25%" fxLayout="column" *ngIf="plugins.basic">
+        <div class="component-title">
+          <mat-icon>https</mat-icon> Basic Auth
+        </div>
+        <div class="component-sub-title">Basic authentication</div>
+      </div>
+      <div class="component-item" fxFlex="25%" fxLayout="column" *ngIf="plugins.others.length>0">
+        <div class="component-title">
+          <mat-icon>extensions</mat-icon>
+          <span matBadge="{{plugins.others.length}}" matBadgeSize="small" matBadgeOverlap="false">Others</span>
+        </div>
+        <div class="component-sub-title">Plugins</div>
+        <ul class="list colored">
+          <li *ngFor="let plugin of plugins.others">
+            {{plugin}}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayoutGap="15px" *ngIf="plugins && plugins.total==0">
+      <div class="component-item">
+        None
+      </div>
+    </div>
+  </mat-card>
+  <app-api-consumers></app-api-consumers>
+</div>

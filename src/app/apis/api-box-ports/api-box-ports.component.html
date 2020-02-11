@@ -1,0 +1,52 @@
+<div class="container">
+  <div class="header mat-elevation-z1">
+    <div class="header-text">
+      <div class="head-marker">
+        <mat-icon>power</mat-icon>
+      </div> Api Server Ports Used
+      <span class="spacer"></span>
+      <span class="loading" *ngIf="loadingApiPort">Loading data ...</span>
+      <span class="loading error" *ngIf="loadingApiPortErr">Unable to load data.</span>
+      <mat-chip-list>
+        <mat-chip matTooltip="Total Ports Used">{{apiPorts ? apiPorts.length : 0}}</mat-chip>
+      </mat-chip-list>
+    </div>
+  </div>
+  <div class="card-header  mat-elevation-z1">
+    <mat-card-title>
+      <mat-icon>search</mat-icon>
+    </mat-card-title>
+    <div class="card-header-search">
+      <input type="search" class="input" matInput [(ngModel)]="searchText" placeholder="Search port" >
+    </div>
+      <span class="spacer"></span>
+  </div>
+  <mat-card class="scroll-panel">
+    <mat-card-content>
+      <table class="table">
+        <tr>
+          <th>
+            Port
+          </th>
+          <th>
+            API
+          </th>
+        </tr>
+        <tr *ngIf="loadingApiPort || loadingApiPortErr">
+          <td colspan="2">
+            <span class="loading" *ngIf="loadingApiPort">Loading data ...</span>
+            <span class="loading error" *ngIf="loadingApiPortErr">Unable to load data.</span>
+          </td>
+        </tr>
+        <tr *ngFor="let port of apiPorts | sortBy: 'port': 'asc' | filter : 'port' :searchText">
+          <td>
+            {{port.port}}
+          </td>
+          <td>
+            {{port.api}}
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

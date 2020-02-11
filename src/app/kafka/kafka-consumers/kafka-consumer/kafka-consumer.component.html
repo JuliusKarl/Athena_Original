@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="header mat-elevation-z1">
+    <div class="header-text">
+      <span class="head-marker"><mat-icon>whatshot</mat-icon>Consumer</span>
+      {{consumerGroup}} &nbsp;&nbsp;&nbsp;&nbsp;
+      <span class="spacer"></span>
+      <span class="loading" [ngClass]="consumerLoadProgress.type" *ngIf="consumerLoadProgress">{{consumerLoadProgress.msg}}</span>
+      <span class="tool-bar">
+        <a class="link clickable"  matTooltip="Refresh" (click)="refresh()"><mat-icon>sync</mat-icon></a>
+      </span>
+    </div>
+  </div>
+  <mat-card class="component" >
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>label_important</mat-icon> Offsets
+      </mat-card-title>
+      <span class="spacer"></span>
+      <span class="loading" [ngClass]="offsetProgress.type" *ngIf="offsetProgress">{{offsetProgress.msg}}</span>
+    </mat-card-header>
+    <mat-card-content>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Partition</th>
+          <th>Offset Start</th>
+          <th>Offset End</th>
+          <th>Current Offset</th>
+          <th>Lag</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngIf="consumers?.partitions.length === 0">
+          <td colspan="6">
+            No Data.
+          </td>
+        </tr>
+        <tr *ngFor="let partition of consumers?.partitions | sortBy : 'topic': 'asc'">
+          <td><a routerLink="/kafka/topics/{{partition.topic}}">{{partition.topic}}</a></td>
+          <td>{{partition.partition}}</td>
+          <td>{{partition.offsets.start}}</td>
+          <td>{{partition.offsets.end}}</td>
+          <td>{{partition.offsets.current}} &nbsp;&nbsp;
+            <span class="subNote link clickable"
+                  [appEnableAction]="consumerGroup"
+                  (click)="openResetDialog(partition.topic, partition.partition)"
+                  matTooltip="Reset the offset for this consumer to a new offset">
+              <mat-icon>skip_previous</mat-icon> Reset
+            </span>
+          </td>
+          <td>{{partition.offsets.lag}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,21 @@
+.offset-input{
+  margin: auto 10px;
+  width: 100px;
+}
+
+.table td {
+  vertical-align: top;
+}
+
+.message-content {
+  max-width: 200px;
+  word-break: break-all;
+  cursor:pointer;
+}
+
+.scroll-panel{
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow-y: auto;
+}

@@ -1,0 +1,6 @@
+.scroll-panel{
+  position: absolute;
+  width: calc(100% - 30px);
+  height: calc(100% - 116px);
+  overflow: auto;
+}

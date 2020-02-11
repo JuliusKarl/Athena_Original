@@ -1,0 +1,77 @@
+  <mat-card  class="component" *ngIf="loading === false" >
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon svgIcon="register-icon"></mat-icon>Registered Applications you own
+      </mat-card-title>
+      <mat-card-title *ngIf="applications.size > 1">
+          <div class="search-input">
+            <mat-icon>search</mat-icon>
+            <input type="search" class="input" matInput [(ngModel)]="searchText"
+                   placeholder="Search value stream" >
+          </div>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="scroll-panel">
+      <div class="container-padded" *ngIf="applications.size === 0 && !error">
+        No registered applications found
+      </div>
+      <div class="container-padded error-text" *ngIf="error">
+        Unable to load registered applications list
+      </div>
+      <div *ngFor="let valueStreamApplications of applications | keyvalue | filter : 'key' :searchText">
+        <div class="value-stream" *ngIf="valueStreamApplications.value.length > 0">
+          {{valueStreamApplications.key}}<span class="subNote"> value stream</span>
+          <span matBadge="{{valueStreamApplications.value.length}}" matBadgeSize="small" matBadgeOverlap="false"></span>
+        </div>
+        <table class="table" *ngIf="valueStreamApplications.value.length > 0">
+          <tbody>
+          <tr *ngFor="let app of valueStreamApplications.value |  filter : 'appName' :searchAppText | sortBy:'appName': 'asc'">
+            <td  width="70%">{{app.appName}}
+              <a routerLink="/init/register/{{app.appName}}"
+                 class="subNote link clickable"
+                 matTooltip="Edit Registration details"
+                 *ngIf="nonProdAdminOnly()"
+              >
+                <mat-icon>edit</mat-icon>
+              </a>
+              <div>
+                <ul class="list list-horizontal subNote noMargin">
+                  <li *ngIf="app.serviceNowQueue" matTooltip="Service now queue">{{app.serviceNowQueue.name}}</li>
+                  <li *ngIf="app.health">{{app.health.build}}</li>
+                </ul>
+              </div>
+            </td>
+            <td>
+              <a class="link" routerLink="/flow/{{app.appName}}"
+                 matTooltip="Architecture diagram"
+              >
+                <mat-icon>device_hub</mat-icon>
+              </a>
+              <a [href]="app.repoUrl"
+                 target="_blank"
+                 matTooltip="Repository"
+                 [ngClass]="{'disabled':!app.repoUrl}">
+                <mat-icon svgIcon="git-icon"></mat-icon>
+              </a>
+              <a [href]="app.pipeline"
+                 target="_blank"
+                 matTooltip="Jenkins Pipeline"
+                 [ngClass]="{'disabled':!app.pipeline}">
+                <mat-icon svgIcon="jenkins-icon"></mat-icon>
+              </a>
+              <a [href]="app.logs"
+                 target="_blank"
+                 matTooltip="Kibana Logs"
+                 [ngClass]="{'disabled':!app.logs}">
+                <mat-icon svgIcon="kibana-icon"></mat-icon>
+              </a>
+              <span *ngIf="app.loading">
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              </span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>

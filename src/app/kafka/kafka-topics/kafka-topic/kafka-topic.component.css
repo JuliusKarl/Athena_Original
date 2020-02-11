@@ -1,0 +1,24 @@
+.scroll-panel{
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-height: 120px;
+  overflow: auto;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh!important;
+}
+
+.mat-card {
+  height: fit-content;
+  margin: 2px;
+  flex: 0;
+}
+
+.messages-component {
+  flex: 1;
+  overflow: auto;
+}

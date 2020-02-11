@@ -1,0 +1,44 @@
+<mat-toolbar class="top-menu" ngClass="{{env}}">
+  <div class="brand">
+    <a routerLink="dashboard">
+      <mat-icon svgIcon="athena-icon"></mat-icon>&nbsp;Athena
+      <div class="env-indicator" ngClass="{{env}}">
+        {{envLabel}}
+      </div>
+    </a>
+  </div>
+  <div class="menu">
+    <a routerLink="dashboard" routerLinkActive="active" matTooltip="Dashboard">
+      <mat-icon>dashboard</mat-icon>&nbsp;Dashboard
+    </a>
+    <a routerLink="init" routerLinkActive="active"
+       matTooltip="Start new development, register app, create pipeline">
+      <mat-icon>minimize</mat-icon>&nbsp;Init
+    </a>
+    <a routerLink="flow" routerLinkActive="active"
+       matTooltip="Check architecture, dependencies of application">
+      <mat-icon>device_hub</mat-icon>&nbsp;Flow
+    </a>
+    <a routerLink="apis" routerLinkActive="active"
+       matTooltip="View API details">
+      <mat-icon>developer_board</mat-icon>&nbsp;Apis
+    </a>
+    <a routerLink="kafka" class="svg-icon" routerLinkActive="active"
+       matTooltip="View Kafka topics, consumers, connectors">
+      <mat-icon  svgIcon="kafka-icon"></mat-icon>&nbsp;Kafka
+    </a>
+  </div>
+  <div class="spacer"></div>
+  <div class="user-info" (click)="openUserDetailsDialog()">
+    <mat-icon *ngIf="!user?.userName" class="error-text" matTooltip="Unable to retrieve user Authorization. Working in limited functionality mode. Try refreshing the browser.">error</mat-icon>
+    <mat-icon *ngIf="user?.userName && !user.admin">account_circle</mat-icon>
+    <mat-icon svgIcon="admin-icon" *ngIf="user.admin"></mat-icon>
+    <span>{{user?.userName}}</span>
+  </div>
+</mat-toolbar>
+<router-outlet></router-outlet>
+<div class="floater">
+  <a href="https://goo.gl/forms/INPg8sXekRkKnJPT2" target="_blank">
+    <mat-icon>bug_report</mat-icon>&nbsp;&nbsp;Request Feature / Raise Bug
+  </a>
+</div>

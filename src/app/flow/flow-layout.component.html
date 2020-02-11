@@ -1,0 +1,21 @@
+<nav mat-tab-nav-bar color="tab-menu">
+    <mat-form-field class="search-input" floatLabel="never" >
+      <div matPrefix>
+        <mat-icon class="search-input-icon" *ngIf="!showCancel()">search</mat-icon>
+        <mat-icon  class="search-input-icon clickable" *ngIf="showCancel()"  (click)="clear()">cancel</mat-icon>
+      </div>
+      <input matInput
+             [matAutocomplete]="search"
+             [formControl]="searchText"
+             placeholder="Search application"
+             (keyup)="searchApp($event)" >
+      <mat-autocomplete #search (optionSelected)="getBom($event.option.viewValue)">
+        <mat-option *ngFor="let result of searchResults">
+          <span>{{result}}</span>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+</nav>
+<div class="page-container page-with-sub-nav">
+  <router-outlet></router-outlet>
+</div>

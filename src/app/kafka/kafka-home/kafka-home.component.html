@@ -1,0 +1,47 @@
+<div class="container container-padded">
+  <div fxLayout="row" fxLayoutGap="15px">
+    <mat-card fxLayoutAlign="center center">
+      <mat-card-content  fxLayout="column" fxLayoutAlign="center center">
+        <div class="count-wrapper">
+          <div class="count title-card count-small">
+            {{kafkaInfo?.version}}
+            <span class="count-text">Kafka</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content  fxLayout="column" fxLayoutAlign="center center">
+        <div class="count-wrapper">
+        <div class="count">
+            {{kafkaInfo?.brokers.length}}
+            <span class="count-text">{{kafkaInfo?.brokers.length === 1 ? "Broker" : "Brokers"}}</span>
+          </div>
+        </div>
+          <ul class="list padded bordered" fxLayout="column">
+            <li  *ngFor="let broker of kafkaInfo?.brokers | sortBy : 'host': 'asc' ">{{broker.host}}:{{broker.port}}</li>
+          </ul>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content  fxLayout="column" fxLayoutAlign="center center">
+        <div class="count-wrapper">
+          <div class="count">
+            {{kafkaInfo?.topics}}
+            <span class="count-text">{{kafkaInfo?.topics === 1 ? "Topic" : "Topics"}}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content  fxLayout="column" fxLayoutAlign="center center">
+        <div class="count-wrapper">
+          <div class="count">
+            {{kafkaInfo?.consumers}}
+            <span class="count-text">{{kafkaInfo?.consumers === 1 ? "Consumer" : "Consumers"}}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

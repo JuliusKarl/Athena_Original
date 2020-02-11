@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="header mat-elevation-z1">
+
+    <div class="header-text">
+
+      <span class="head-marker">
+        <mat-icon>camera</mat-icon>
+        Check Payload
+      </span>
+      {{apiName}}
+
+      <span *ngIf="integrationUrlNotFound === true" class="loading error">No Integration URL has been found for API {{apiName}}</span>
+
+      <span class="spacer"></span>
+
+      <span class="tool-bar">
+        <a matTooltip="Go Back" class="link clickable" routerLink=".."><mat-icon>keyboard_return</mat-icon></a>
+      </span>
+    </div>
+  </div>
+
+  <mat-card class="component" *ngIf="initialLoading === true">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>gps_fixed</mat-icon>&nbsp;&nbsp;HTTP Request
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="component-item">
+      PUT {{integrationUrl}}
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="component" *ngIf="initialLoading === true">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>email</mat-icon>&nbsp;&nbsp;Source Payload
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="component-item">
+      <textarea class="payload" #payload matInput placeholder="{ 'fieldName': 'value' }&#10;"></textarea>
+      <a (click)="getPayload(payload.value)" ngClass="{{loading === true ? 'disabled' : ''}}" mat-button>Get Payload</a>
+      <span *ngIf="loading === true" class="loading info">Loading...</span>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="component" *ngIf="initialLoading === true && loading === false">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>email</mat-icon>&nbsp;&nbsp;Target Payload
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="component-item">
+      <textarea [(ngModel)]="targetPayload"  matInput readonly mat-autosize="true"></textarea>
+    </mat-card-content>
+  </mat-card>
+</div>

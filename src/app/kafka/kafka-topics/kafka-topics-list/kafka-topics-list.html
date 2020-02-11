@@ -1,0 +1,37 @@
+<div class="header mat-elevation-z1">
+  <div class="header-text">
+    <div class="head-marker"><mat-icon>layers</mat-icon></div>Topics
+    <span class="spacer"></span>
+    <a matTooltip="Refresh" class="link clickable"  (click)="listTopics()"><mat-icon>sync</mat-icon></a>&nbsp;&nbsp;&nbsp;
+    <a matTooltip="Topics home" class="link clickable"  routerLink="/kafka/topics"><mat-icon>home</mat-icon></a>&nbsp;&nbsp;&nbsp;
+  </div>
+</div>
+
+<div class="sub-header justify-right sub-header-text">Show system topics
+  <mat-icon class="clickable" [ngClass]="{'on': showSystemTopics}" (click)="toggleSystemTopics()">{{showSystemTopics? 'toggle_on' : 'toggle_off'}}</mat-icon>
+</div>
+
+<div class="card-header  mat-elevation-z1">
+  <mat-card-title>
+    <mat-icon>search</mat-icon>
+  </mat-card-title>
+  <div class="card-header-search">
+    <input type="search" class="input" [(ngModel)]="searchText" matInput placeholder="Search by topic name" >
+  </div>
+</div>
+
+<mat-card class="scroll-panel">
+  <span class="loading" *ngIf="loading">Loading data ...</span>
+  <span class="loading error" *ngIf="errorWhileLoading">Unable to load data.</span>
+  <div *ngIf="!loading">
+    <a 
+      class="link list-item" 
+      matLine 
+      *ngFor="let topic of topics | sortBy: '': 'asc' | filter: '' :searchText" 
+      [routerLink]="[topic]" 
+      routerLinkActive="active">
+        {{ topic }}
+      <span class="spacer"></span>
+    </a>
+  </div>
+</mat-card>

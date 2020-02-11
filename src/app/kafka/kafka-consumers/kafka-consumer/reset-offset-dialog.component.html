@@ -1,0 +1,51 @@
+<div mat-dialog-title class="header">
+  Reset offset <span class="bar-separator"></span> {{data.consumerGroup}}
+</div>
+<div mat-dialog-content class="dialog-content">
+  <form>
+    <mat-form-field  class="mat-form-field-full">
+      <input matInput placeholder="Topic" [value]="data.topic" readonly disabled>
+    </mat-form-field>
+    <mat-form-field  class="mat-form-field-full">
+      <input  matInput placeholder="Partition" [value]="data.partition" readonly disabled>
+    </mat-form-field>
+    <mat-form-field  class="mat-form-field-full">
+      <input matInput placeholder="New offset" [formControl]="offsetFormControl">
+      <mat-error *ngIf="offsetFormControl.hasError('pattern')">
+        New offset should be <strong>numeric</strong>
+      </mat-error>
+      <mat-error *ngIf="offsetFormControl.hasError('required')">
+        New offset value is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+    <span class="spacer"></span>
+  </form>
+
+  <div class="loading" *ngIf="loading">
+    Loading...
+  </div>
+
+  <div class="error" *ngIf="!success && error && !loading">
+    {{error}}
+  </div>
+
+  <div class="success" *ngIf="success && !loading">
+    Successfully reset offset!
+  </div>
+
+  <div *ngIf="operations && !loading">
+    <p>Technical Details:</p>
+    <ol>
+      <li *ngFor="let op of operations">Operation {{op.name}}: {{op.message}}</li>
+    </ol>
+  </div>
+</div>
+
+<div mat-dialog-actions class="dialog-actions" *ngIf="!success">
+  <button mat-button (click)="close()" [disabled]="loading">Cancel</button>&nbsp;&nbsp;&nbsp;
+  <button class="mat-button-secondary" mat-button (click)="resetConfirmDialog()" [disabled]="loading || hasFormErrors()">Reset Offset</button>
+</div>
+
+<div mat-dialog-actions class="dialog-actions" *ngIf="success">
+  <button mat-button (click)="close()">Close</button>&nbsp;&nbsp;&nbsp;
+</div>

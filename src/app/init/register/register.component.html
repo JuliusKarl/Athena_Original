@@ -1,0 +1,165 @@
+<div class="page-container page-with-sub-nav">
+  <div class="container">
+    <div class="header mat-elevation-z1">
+
+      <div class="header-text">
+        <span class="head-marker"><mat-icon svgIcon="register-icon"></mat-icon></span>
+        <div *ngIf="!isEditMode">Register Application (in all environments)</div>
+        <span *ngIf="isEditMode">Update Application Registration (in all environments)</span>
+        <span class="spacer"></span>
+        <span class="tool-bar">
+          <span class="loading" [ngClass]="registrationProgress.type" *ngIf="registrationProgress">
+            {{registrationProgress.message}}</span>
+        </span>
+      </div>
+    </div>
+    <span class="error-text" *ngIf="lookupError">{{lookupError}}</span>
+    <mat-card class="scroll-panel" *ngIf="registerForm && !lookupError">
+      <mat-card-content>
+        <form [formGroup]="registerForm">
+          <table class="split-form">
+            <!--appName (Edit mode)-->
+            <tr *ngIf="isEditMode">
+              <td>Registered application</td>
+              <td>
+                {{this.inputAppName}}
+              </td>
+            </tr>
+            <!--repoUrl-->
+            <tr>
+            <td>
+              <div *ngIf="!isEditMode">What is the <a href="{{repoUrl}}" target="_blank">Bitbucket.org</a> Repository URL?</div>
+              <div *ngIf="isEditMode"><a href="{{repoUrl}}" target="_blank">Bitbucket.org</a> Repository URL</div>
+            </td>
+            <td>
+              <mat-form-field class="large-input" *ngIf="!isEditMode">
+                <input  type="text" matInput  formControlName="repoUrl" autocomplete="off" (blur)="validateRepoUrl()">
+                  <mat-error>
+                  <span *ngIf="registerForm.get('repoUrl').hasError('repoNotFound')">
+                    Repository not found on <b>uoa</b> team Bitbucket.
+                  </span>
+                </mat-error>
+              </mat-form-field>
+              <div *ngIf="isEditMode">
+                {{formService.getValue('repoUrl', registerForm)}}
+              </div>
+              <div *ngIf="repoValidationProgress" [className]="repoValidationProgress.type + '-text subNote' ">
+                {{repoValidationProgress.message}}
+              </div>
+            </td>
+            </tr>
+            <tr *ngIf="registerForm.get('repoUrl').valid && isRegistered">
+              <td class="strong">
+                Application already registered
+              </td>
+              <td>
+                Application already registered using the above repository url.
+                <table class="summary-table">
+                  <tr>
+                    <td colspan="2">
+                      <b>Registration Details</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Registration name</td><td>{{registeredApp.appName}}</td>
+                  </tr>
+                  <tr>
+                    <td>Application type</td><td>{{registeredApp.type}}</td>
+                  </tr>
+                  <tr>
+                    <td>Registered By</td><td>{{registeredApp.creatorUpi}}</td>
+                  </tr>
+                  <tr>
+                    <td class="subNote" colspan="2">
+                      <a routerLink="/">Check registered applications</a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <!--appType-->
+            <tr *ngIf="formService.hasDataFor('repoUrl', registerForm) && appName">
+              <td>What is the type of your application?</td>
+              <td>
+                <mat-form-field >
+                  <mat-select #appType  formControlName="appType">
+                    <mat-option [value]="appType" *ngFor="let appType of appTypes">
+                      <span>{{appType}}</span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+            <!--appName-->
+            <tr *ngIf="formService.hasDataFor('appType', registerForm) && appName && !isEditMode">
+              <td>This {{formService.getValue('appType', registerForm)}} will be registered as:</td>
+              <td>
+                  {{appName}}
+              </td>
+            </tr>
+            <!--valueStream-->
+            <tr *ngIf="formService.hasDataFor('appType', registerForm)  && appName">
+              <td>Which value stream this {{formService.getValue('appType', registerForm)}} belongs to?</td>
+              <td>
+                <mat-form-field>
+                  <mat-select #valueStream formControlName="valueStream">
+                    <mat-form-field class="select-search">
+                      <span matPrefix class="select-search-icon">
+                        <mat-icon>search</mat-icon>
+                      </span>
+                      <input  matInput #searchValueStream autocomplete="off">
+                    </mat-form-field>
+                    <mat-option
+                      *ngFor="let valueStream of valueStreams
+                      | filter : null : searchValueStream.value
+                      | sortBy: null : 'asc'"
+                      [value]="valueStream">
+                      <span>{{valueStream}}</span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+            <!--serviceQueue-->
+            <tr *ngIf="formService.hasDataFor('valueStream', registerForm) && appName && formService.hasDataFor('appType', registerForm)">
+              <td>
+                Who will support this {{formService.getValue('appType', registerForm)}}?
+                What is the ServiceNow Queue?
+              </td>
+              <td>
+                <mat-form-field class="split-form-input">
+                  <mat-select #serviceQueue formControlName="serviceQueue"
+                              [compareWith]="compareServiceQueue"
+                  >
+                    <mat-form-field class="select-search">
+                      <span matPrefix class="select-search-icon">
+                        <mat-icon>search</mat-icon>
+                      </span>
+                      <input  matInput #searchServiceQueue autocomplete="off">
+                    </mat-form-field>
+                    <mat-option
+                      *ngFor="let serviceNowGroup of serviceNowGroups
+                      | filter : 'name' : searchServiceQueue.value
+                      | sortBy: 'name' : 'asc' "
+                      [value]="serviceNowGroup"
+                    >
+                      <span>{{serviceNowGroup.name}}</span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+            <!--Generate-->
+            <tr *ngIf="formService.hasDataFor('serviceQueue', registerForm)  && appName">
+              <td></td>
+              <td>
+                <button mat-button (click)="register()">{{action}}</button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

@@ -1,0 +1,37 @@
+.message-text-area{
+  height: 150px;
+}
+
+.scroll-panel {
+  position: relative;
+  height: calc(100vh - 750px);
+  min-height: 150px;
+  overflow: auto;
+}
+
+.scroll-panel.fullscreen{
+  height: calc(100vh - 200px);
+}
+
+.status{
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.no-response{
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-response-text{
+  color: #bababa;
+}
+
+.no-response img{;
+  width: 5em;
+  filter: grayscale(1);
+  opacity: 0.55;
+}

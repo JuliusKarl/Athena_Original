@@ -1,0 +1,30 @@
+<div class="header mat-elevation-z1">
+  <div class="header-text">
+    <div class="head-marker"><mat-icon>whatshot</mat-icon></div>Consumers
+    <span class="spacer"></span>
+    <a matTooltip="Refresh" class="link clickable"  (click)="listConsumers()"><mat-icon>sync</mat-icon></a>&nbsp;&nbsp;&nbsp;
+    <a matTooltip="Consumers home" class="link clickable"  routerLink="../consumers"><mat-icon>home</mat-icon></a>&nbsp;&nbsp;&nbsp;
+  </div>
+</div>
+
+<div class="sub-header justify-right sub-header-text">Show system consumers
+  <mat-icon class="clickable" [ngClass]="{'on': showSystemConsumers}" (click)="toggleSystemConsumers()">{{showSystemConsumers? 'toggle_on' : 'toggle_off'}}</mat-icon>
+</div>
+
+<div class="card-header  mat-elevation-z1">
+  <mat-card-title>
+    <mat-icon>search</mat-icon>
+  </mat-card-title>
+  <div class="card-header-search">
+    <input type="search" class="input" [(ngModel)]="searchText" matInput placeholder="Search by consumer name" >
+  </div>
+</div>
+
+<mat-card class="scroll-panel">
+  <span class="loading" *ngIf="loading">Loading data ...</span>
+  <span class="loading error" *ngIf="errorWhileLoading">Unable to load data.</span>
+    <a class="link list-item" matLine *ngFor="let consumer of consumers | sortBy: '': 'asc' | filter: '' :searchText" [routerLink]="[consumer]" routerLinkActive="active">
+      {{ consumer }}
+      <span class="spacer"></span>
+    </a>
+</mat-card>

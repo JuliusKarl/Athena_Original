@@ -1,0 +1,155 @@
+<div class="container">
+  <div class="paper mat-elevation-z1">
+    <div class="tool-bar">
+      <span class="paper-msg" [ngClass]="msg.type" *ngIf="msg">{{msg.msg}}</span>
+      <a routerLink="../coreApps" class="link clickable"><mat-icon matTooltip="Core Applications">center_focus_strong</mat-icon></a>
+      <a (click)="back()" class="link clickable"><mat-icon matTooltip="Go Back">keyboard_return</mat-icon></a>
+    </div>
+    <div class="paper-details-block">
+        <table *ngIf="rawApp" class="paper-details">
+          <tr >
+            <td colspan="2" class="paper-title" >
+              {{rawApp.appName}}
+            </td>
+          </tr>
+          <tr *ngIf="!rawApp.lastBuildUrl && !rawApp.creatorUpi">
+            <td colspan="2">
+              <span class="subNote">This application entry was manually created.</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Application Type</td>
+            <td>{{rawApp.type || 'Unknown'}}</td>
+          </tr>
+          <tr>
+            <td>Total Dependencies</td>
+            <td>{{totalDependencies}}</td>
+          </tr>
+          <tr>
+            <td>Total Consumers</td>
+            <td>{{totalConsumers}}</td>
+          </tr>
+          <tr>
+            <td>Value Stream</td>
+            <td>{{rawApp.valueStreamGroup || 'Unknown' }}</td>
+          </tr>
+          <tr>
+            <td>Service Now Queue</td>
+            <td>{{rawApp.serviceNowQueue?.name || 'Unknown' }}</td>
+          </tr>
+          <tr *ngIf="rawApp.repoUrl">
+            <td colspan="2"><a [href]="rawApp.repoUrl" target="_blank">
+              <mat-icon svgIcon="git-icon"></mat-icon>Project Repository</a></td>
+          </tr>
+
+          <tr *ngIf="rawApp.lastBuildUrl">
+            <td colspan="2">
+              <a [href]="rawApp.lastBuildUrl" target="_blank">
+              <mat-icon svgIcon="jenkins-icon"></mat-icon>Jenkins last build</a>
+            </td>
+          </tr>
+
+          <tr *ngIf="user.admin">
+            <td colspan="2">
+              <a (click)="displayData()" target="_blank">
+              <mat-icon>arrow_downward</mat-icon>RAW</a>
+            </td>
+          </tr>
+        </table>
+    </div>
+    <div class="legend">
+        <b>Flow Direction</b>
+        <div><span class="line in"></span>&nbsp;&nbsp;Data flows into the app</div>
+        <div><span class="line out"></span>&nbsp;&nbsp;Data flows out of the app</div>
+    </div>
+    <svg *ngIf="mainApp"
+         [attr.width]="draw.CANVAS_WIDTH"
+         [attr.height]="draw.CANVAS_HEIGHT"
+         [attr.viewbox]="'0 ' + '0' +  draw.CANVAS_WIDTH + ' ' +  draw.CANVAS_HEIGHT">
+      <g>
+        <g id="mainApp">
+          <rect [attr.x]="mainApp.app.posX"
+                [attr.y]="mainApp.app.posY"
+                [attr.height]="mainApp.app.height"
+                [attr.width]="mainApp.app.width" [attr.class]="draw.getAppClass(mainApp.app)"
+          />
+          <text [attr.x]="mainApp.app.titleX()"
+                [attr.y]="mainApp.app.titleY()"
+                [attr.height]="mainApp.app.height"
+                [attr.width]="mainApp.app.width"
+                [attr.class]="draw.getAppClass(mainApp.app) + '-text svg-text'"
+                fill="#000">{{mainApp.app.appName}}</text>
+          <text
+            [attr.x]="mainApp.app.subTitleX()"
+            [attr.y]="mainApp.app.subTitleY()"
+            class="svg-sub-text svg-text">{{mainApp.app.type}}</text>
+          <path *ngIf="mainApp.app.isApi()" [attr.d]="draw.getEndpoint(mainApp.app, false)"
+                class="connection-line"/>
+          <path *ngIf="mainApp.app.isApi()" [attr.d]="draw.getEndpointArch(mainApp.app)"
+                class="arch-line"/>
+        </g>
+
+        <g id="app" [attr.class]="draw.getOutboundClass(dep)" *ngFor="let dep of mainApp.dependencies" class="app-link"
+           (click)="explore(dep.appName)">
+          <rect *ngIf="dep.isCore() || dep.isApi() || dep.isConnector() || dep.isIntegration()"
+            [attr.x]="dep.posX"
+            [attr.y]="dep.posY"
+            [attr.height]="dep.height"
+            [attr.width]="dep.width"
+            [attr.class]="draw.getAppClass(dep)"></rect>
+          <!--<image *ngIf="dep.isQueue()"-->
+            <!--xlink:href="assets/arch-icons/queue.png"-->
+            <!--[attr.x]="dep.posX"-->
+            <!--[attr.y]="dep.posY"-->
+            <!--[attr.height]="dep.iconHeight()"-->
+
+          <!--/>-->
+          <path *ngIf="dep.isQueue()" [attr.d]="draw.getQueue(dep)" [attr.class]="'queue'"/>
+          <image *ngIf="dep.isOther()"
+            [attr.xlink:href]="'assets/arch-icons/' + dep.type + '.png'"
+            [attr.x]="dep.posX"
+            [attr.y]="dep.posY"
+            [attr.height]="dep.iconHeight()" [attr.width]="dep.iconWidth()"
+          />
+          <!--<path *ngIf="!rawApp.standardProperty"-->
+                <!--[matTooltip]="'This component was derived from non-standard property in  ' + rawApp.appName + ' application'"-->
+                <!--[attr.d]="draw.getNoteIcon(dep)" class="app-note"></path>-->
+
+
+          <text
+            [attr.x]="dep.titleX()"
+            [attr.y]="dep.titleY()"
+            [attr.class]="draw.getAppClass(dep) + '-text svg-text'"
+            >{{dep.appName}}</text>
+          <text
+            [attr.x]="dep.subTitleX()"
+            [attr.y]="dep.subTitleY()"
+            class="svg-sub-text svg-text">{{dep.type}}</text>
+          <path *ngIf="dep.isApi()" [attr.d]="draw.getEndpoint(dep)"
+                class="connection-line"/>
+          <path *ngIf="dep.isApi() && !dep.isConsumer" [attr.d]="draw.getEndpointArch(dep)"
+                class="arch-line"/>
+          <path *ngIf="dep.isConnector()" [attr.d]="draw.getConnectorEndPoint()"
+            class="connection-line"/>
+          <path *ngIf="dep.isConnector()" [attr.d]="draw.getConnectorEndPointArch()"
+                class="arch-line"/>
+          <path
+            [attr.d]="draw.getPath(dep)" [attr.class]="dep.flow + ' connection-line'"/>
+
+          <g id="toolbar" >
+            <image *ngFor="let action of dep.getActions(); let i = index; trackBy: trackByFn" class="app-action"
+                   [ngClass]="{'app-action-link': action.link}"
+                   [matTooltip]= "action.toolTip"
+                   [attr.xlink:href]="'assets/arch-icons/' + action.icon"
+                   [attr.x]="dep.actionsX(i)"
+                   [attr.y]="dep.actionsY()"
+                   (click)="view(action.link); $event.stopPropagation();"
+            />
+          </g>
+
+        </g>
+      </g>
+      Browser doesn't support inline SVG?
+    </svg>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+.app-tables {
+  display: flex;
+  flex-direction: row;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-table {
+  margin: 10px;
+  min-width: 300px;
+}
+
+.no-applications-found {
+  padding: 10px;
+}
+.value-stream{
+  padding: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: #3c5897;
+  border-top: 1px solid #3c5897;
+  border-bottom: 1px solid #3c5897
+}
+.scroll-panel{
+  height: calc(100% - 60px);
+}

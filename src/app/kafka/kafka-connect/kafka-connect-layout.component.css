@@ -1,0 +1,19 @@
+.message-input{
+  display: flex;
+  height: 100%;
+}
+.message-input-form{
+  min-width: 50%;
+}
+
+.message-input-instructions-wrapper{
+  display: flex;
+  margin-left: 30px
+}
+.message-input-instructions{
+  margin-left: 10px
+}
+
+.message-input-instructions-wrapper .subNote{
+  margin: 20px 0;
+}

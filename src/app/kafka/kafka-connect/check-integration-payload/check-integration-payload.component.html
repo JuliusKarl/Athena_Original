@@ -1,0 +1,112 @@
+<div class="container" id="container">
+  <div class="header mat-elevation-z1">
+
+    <div class="header-text">
+
+      <span class="head-marker">
+        <mat-icon svgIcon="check-payload-icon"></mat-icon>
+        &nbsp;Check Payload
+      </span>
+
+      {{targetApplication}}
+
+      <span class="spacer"></span>
+
+      <span class="tool-bar">
+        <a matTooltip="Go Back" class="link clickable" routerLink="../.."><mat-icon>keyboard_return</mat-icon></a>
+      </span>
+    </div>
+  </div>
+
+  <mat-card class="component" *ngIf="integrationUrl">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>gps_fixed</mat-icon>&nbsp;&nbsp;HTTP Request
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="component-item">
+      PUT {{integrationUrl}}
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="component" *ngIf="integrationUrl">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>layers</mat-icon>&nbsp;&nbsp;Topic
+        <mat-icon>chevron_right</mat-icon>
+        <strong>Select topic you want to simulate the message is from</strong>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="component-item">
+      <mat-select [(ngModel)]="topicName" (selectionChange)="setSampleMessages()">
+        <mat-option
+          *ngFor="let topic of topics"
+          [value]="topic">
+          <span>{{topic}}</span>
+        </mat-option>
+      </mat-select>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="component">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>email</mat-icon>&nbsp;&nbsp;Message to Integration
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="component-item">
+      <div class="message-input">
+        <div class="message-input-form">
+          <mat-form-field floatLabel="never" class="mat-form-field-full">
+          <textarea #message matInput class="message-text-area"
+                    [formControl]="messageFormControl"></textarea>
+            <mat-error *ngIf="messageFormControl.hasError('required')">At least one message is required.</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="message-input-instructions-wrapper">
+          <mat-icon>help</mat-icon>
+          <div class="message-input-instructions">
+            The message would trigger the integration and display the payload that would be sent to the target application.
+            <br><b>Note:</b> The integration will NOT send the payload to the target system.
+            <br><br>
+            <b>Sample payload:</b><br>
+            <div *ngFor="let message of sampleMessages">
+              {{message}}
+            </div>
+            <div *ngIf="err" class="error-text">
+              {{err}}
+            </div>
+            <div class="subNote">
+              To send the payload to the target system use
+              &nbsp;<a routerLink="../../publish-messages/{{targetApplication}}">Publish Messages</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button mat-button (click)="checkPayload(message.value)"
+              [disabled]="messageFormControl.errors">Submit</button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="component" id="responsePanel">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon matTooltip="Fullscreen" class="clickable" (click)="toggleScreen()" *ngIf="!fullscreen">fullscreen</mat-icon>
+        <mat-icon  matTooltip="Exit fullscreen" class="clickable" (click)="toggleScreen()" *ngIf="fullscreen">fullscreen_exit</mat-icon>
+        <span class="bar-separator"></span>
+        <mat-icon>email</mat-icon>&nbsp;&nbsp;Target Application Payload / Integration Response
+      </mat-card-title>
+      <span class="spacer"></span>
+      <div class="status" *ngIf="integrationResponse">Status: {{integrationResponse?.status}} {{integrationResponse?.statusText}}</div>
+    </mat-card-header>
+    <mat-card-content class="component-item  scroll-panel" [ngClass]="{'fullscreen': fullscreen}" *ngIf="integrationResponse">
+      <pre>{{targetPayload}}</pre>
+    </mat-card-content>
+    <mat-card-content class="component-item scroll-panel no-response" [ngClass]="{'fullscreen': fullscreen}"  *ngIf="!integrationResponse">
+      <img src="/assets/wait-action.png" alt="No response yet"/>
+      <div class="no-response-text">No response yet</div>
+      <div *ngIf="sending">Sending request...</div>
+    </mat-card-content>
+  </mat-card>
+
+</div>

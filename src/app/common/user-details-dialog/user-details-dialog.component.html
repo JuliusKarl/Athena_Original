@@ -1,0 +1,26 @@
+<div mat-dialog-title class="nav-dialog-title">
+  <mat-icon *ngIf="user?.userName && !user.admin">account_circle</mat-icon>
+  <mat-icon svgIcon="admin-icon" *ngIf="user.admin"></mat-icon>
+  <span>{{user?.userName}}</span>
+</div>
+
+<div mat-dialog-content class="dialog-content-fullwidth">
+  <div class="mat-card-header">
+    Value Streams
+    <span matBadge="{{user.valueStreams.length}}" matBadgeSize="small" matBadgeOverlap="false"></span>
+  </div>
+  <ul class="list padded colored">
+    <li *ngFor="let valueStream of user.valueStreams | sortBy: null : 'asc'">
+       {{valueStream}}
+    </li>
+  </ul>
+  <div class="mat-card-header">
+    Authorized Applications
+    <span matBadge="{{user.authorizedApps.length}}" matBadgeSize="small" matBadgeOverlap="false"></span>
+  </div>
+  <ul class="list padded colored">
+    <li *ngFor="let app of user.authorizedApps | sortBy: null : 'asc'">
+      {{app}}
+    </li>
+  </ul>
+</div>

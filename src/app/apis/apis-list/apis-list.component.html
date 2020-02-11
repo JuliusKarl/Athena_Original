@@ -1,0 +1,51 @@
+<div class="header mat-elevation-z1">
+  <div class="header-text">
+    <div class="head-marker"><mat-icon>developer_board</mat-icon></div>APIs
+    <span class="spacer"></span>
+    <a class="link clickable"  (click)="refreshList()"><mat-icon>refresh</mat-icon></a>&nbsp;&nbsp;&nbsp;
+    <a class="link clickable"  routerLink="../apis"><mat-icon>home</mat-icon></a>&nbsp;&nbsp;&nbsp;
+    <mat-chip-list>
+      <mat-chip matTooltip="Total Apis">{{apiMap ? apiMap.length : 0}}</mat-chip>
+    </mat-chip-list>
+  </div>
+</div>
+<!--<div class="sub-header mat-elevation-z1">-->
+  <!--<span matTooltip="Non premise Apis" class="sub-header-text info-primary">Proxy Apis: {{apiStats.proxyApis}}</span>-->
+  <!--<span class="sub-header-text info-secondary">-->
+    <!--Apis: {{apiStats.nonProxyApis}}&nbsp;-->
+    <!--<span class="sub-header-bar-wrapper">-->
+      <!--<span fxFlex="{{apiStats.standardApis/apiStats.nonProxyApis*100}}" class="sub-header-bar success" matTooltip="Meets standards" > {{apiStats.standardApis}}</span>-->
+      <!--<span fxFlex="{{apiStats.nonStandardApis/apiStats.nonProxyApis*100}}" class="sub-header-bar error" matTooltip="Does Not meet standards" > {{apiStats.nonStandardApis}}</span>-->
+    <!--</span>-->
+  <!--</span>-->
+<!--</div>-->
+<div class="card-header  mat-elevation-z1">
+  <mat-card-title>
+    <mat-icon>search</mat-icon>
+  </mat-card-title>
+  <div class="card-header-search">
+    <input type="search" class="input" size="10" matInput [(ngModel)]="searchText" placeholder="Search by API name" >
+  </div>
+</div>
+<mat-card class="scroll-panel">
+  <mat-card-content>
+    <span class="loading" *ngIf="loadingApis">Loading data ...</span>
+    <span class="loading error" *ngIf="loadingApisErr">Unable to load data.</span>
+    <mat-accordion multi="true" displayMode="flat">
+      <mat-expansion-panel *ngFor="let project of apiMap |sortBy: 'name': 'asc' | filter : 'name' :searchText">
+          <mat-expansion-panel-header class="panel-header">
+            {{project.name}}<span class="spacer"></span>
+              <span class="subNote light">
+                <mat-icon matTooltip="Proxy" *ngIf="project.isProxy">call_missed_outgoing</mat-icon>
+                <mat-icon matTooltip="Specs not present" class="notPresent" *ngIf="checkForNonStandard(project,'hasSpecs')">description</mat-icon>
+                <mat-icon matTooltip="Health not present" class="notPresent" *ngIf="checkForNonStandard(project,'hasHealth')">favorite</mat-icon>
+              </span>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+          </mat-expansion-panel-header>
+        <mat-nav-list  class="panel-list">
+          <a matLine class="list-item" *ngFor="let api of project.endpoints"  [routerLink]="[project.name, api.id]" routerLinkActive="active">{{ api.name }}</a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
+</mat-card>

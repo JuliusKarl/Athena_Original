@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Athena - Error</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Mono:300" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body{
+      margin:0;
+      padding:0;
+      font-weight: 400;
+      font-size: .875rem;
+      line-height: 1.5;
+      font-family: Roboto,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;
+      background:#e9ebee;
+      color:#565a5d;
+      overflow: hidden;
+    }
+    .error{
+      display:flex;
+      padding:0;
+      margin: auto;
+      width:500px;
+      height: 100vh;
+      justify-content: center;
+    }
+    .error-details, .error-image{
+      display:flex;
+      margin: auto;
+      flex-direction: column;
+    }
+    h1{
+      font-size: 10rem;
+      font-weight: 600;
+      line-height: 1;
+      padding: 0;
+      margin: 0 0 0 -0.5rem;
+    }
+    h4{
+      font-size: 2rem;
+      font-weight: 100;
+      line-height: 1;
+      padding: 0;
+      margin: 0;
+    }
+    .line{
+      margin-top: 15px;
+    }
+    ul.line{
+      padding: 0 15px;
+      list-style-type: square;
+    }
+    a,a:visited{
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+  <div class="error">
+    <div class="error-details">
+      <h1>
+        Hooo!
+      </h1>
+      <h4>Well, this is unexpected...</h4>
+      <div class="line">
+        <b>Error loading application.</b>
+      </div>
+      <ul class="line">
+        <li>Try <a href="/">refreshing</a> the page</li>
+        <li>Contact Center for Enablement team</li>
+      </ul>
+    </div>
+    <div class="error-image">
+      <img src="./assets/sad.png">
+    </div>
+  </div>
+</body>
+</html>
+

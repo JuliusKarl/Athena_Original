@@ -1,0 +1,5 @@
+
+.messages-text-area{
+  min-height: 200px;
+  height: calc(100vh - 530px);
+}

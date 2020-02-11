@@ -1,0 +1,87 @@
+<mat-card-header class="component-header">
+  <mat-card-title>
+    <mat-icon>description</mat-icon>&nbsp;Messages in Partition {{partition}}
+    <span class="subNote">(Max. messages displayed 100)</span>
+  </mat-card-title>
+
+  <span class="spacer"></span>
+
+  <span 
+    class="loading" 
+    [ngClass]="partitionLoadProgress.type" 
+    *ngIf="partitionLoadProgress">{{partitionLoadProgress.msg}}
+  </span>
+
+  <span class="tool-bar">
+    <a 
+      class="link clickable" 
+      *ngIf="!partitionLoadProgress" 
+      matTooltip="Refresh" 
+      (click)="fetchData()"><mat-icon>
+        sync</mat-icon>
+    </a>
+  </span>
+
+</mat-card-header>
+
+<mat-card-content 
+  class="scroll-panel">
+  <table class="table">
+    <thead>
+      <tr>
+        <td [colSpan]="4">
+         <span class="tool-bar tool-bar-full-width">
+           <span class="search-input">
+            <mat-icon>search</mat-icon>
+            <input 
+              type="search" 
+              class="input" 
+              size="50"
+              [(ngModel)]="searchText"
+              matInput 
+              placeholder="Search by message content within displayed messages" />
+           </span>
+           <span class="spacer"></span>
+           <mat-button-toggle-group 
+              [(value)]="starting" 
+              (change)="setOffset($event.value)">
+             <mat-button-toggle value="earliest">earliest</mat-button-toggle>
+             <mat-button-toggle value="latest">latest</mat-button-toggle>
+             <mat-button-toggle value="offset">offset</mat-button-toggle>
+           </mat-button-toggle-group>
+           <span 
+              class="offset-input" 
+              *ngIf="showOffsetInput">
+            <input 
+              matInput 
+              [(ngModel)]="startOffset"  
+              placeholder="Starting offset" 
+              (blur)="setOffset('offset')" />
+           </span>
+         </span>
+        </td>
+      </tr>
+      <tr>
+        <th 
+          class="clickable" 
+          (click)="toggleDirection()">Offset <mat-icon>{{sortIcon}}</mat-icon></th>
+        <th>Key</th>
+        <th>Message</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="!partitionLoadProgress">
+      <tr *ngIf="partitionData.length === 0">
+        <td colspan="4">
+          No Messages found in Partition {{partition}}
+        </td>
+      </tr>
+      <tr *ngFor="let data of partitionData | sortBy :'offset': sortDirection | filter : 'message' :searchText"  >
+        <td>{{data.offset}}</td>
+        <td>{{data.key}}</td>
+        <td class="message-content" (click)="openSnackBar('Copied to clipboard', data.message)">{{data.message}}</td>
+        <td>{{data.timestamp | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+      </tr>
+    </tbody>
+  </table>
+</mat-card-content>

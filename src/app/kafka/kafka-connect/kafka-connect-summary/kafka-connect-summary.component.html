@@ -1,0 +1,47 @@
+<div class="container container-padded">
+  <div fxLayout="row" fxLayoutGap="15px">
+    <mat-card fxLayoutAlign="center center">
+      <mat-card-content  fxLayout="column" fxLayoutAlign="center center">
+        <div class="count-wrapper">
+          <div class="count title-card count-small">
+            {{summary?.version}}
+            <span class="count-text" *ngIf="loading">Loading...</span>
+            <span class="count-text count-text-small">Kafka Connect</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content  fxLayout="column" fxLayoutAlign="center center">
+        <div class="count-wrapper">
+          <div class="count">
+            {{summary?.sourceConnectors}}
+            <span class="count-text" *ngIf="loading">Loading...</span>
+            <span class="count-text">Source</span>
+          </div>
+        </div>
+        <ul class="list padded bordered" fxFill>
+          <li class="success-border">Running <span class="spacer"></span>{{summary?.taskHealth['source']['RUNNING'] || 0}}</li>
+          <li class="warning-border">Paused <span class="spacer"></span>{{summary?.taskHealth['source']['PAUSED'] || 0}}</li>
+          <li class="error-border">Failed <span class="spacer"></span>{{summary?.taskHealth['source']['FAILED'] || 0}}</li>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content  fxLayout="column" fxLayoutAlign="center center">
+        <div class="count-wrapper">
+          <div class="count">
+            {{summary?.sinkConnectors}}
+            <span class="count-text" *ngIf="loading">Loading...</span>
+            <span class="count-text">Sink</span>
+          </div>
+        </div>
+        <ul class="list padded bordered" fxFill>
+          <li class="success-border">Running <span class="spacer"></span>{{summary?.taskHealth['sink']['RUNNING'] || 0}}</li>
+          <li class="warning-border">Paused <span class="spacer"></span>{{summary?.taskHealth['sink']['PAUSED'] || 0}}</li>
+          <li class="error-border">Failed <span class="spacer"></span>{{summary?.taskHealth['sink']['FAILED'] || 0}}</li>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

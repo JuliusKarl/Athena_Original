@@ -1,0 +1,18 @@
+<div mat-dialog-title class="error">
+  {{data.title}}
+</div>
+
+<div mat-dialog-content>
+  <div class="dialog-message" [innerHTML]="getMessage()"></div>
+  <div *ngIf="data.reConfirmPhrase">
+    Enter the phrase "{{data.reConfirmPhrase}}" into the field below to confirm.
+    <mat-form-field class="mat-form-field-full">
+      <input matInput [(ngModel)]="phrase">
+    </mat-form-field>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">{{data.noButton}}</button>
+  <button class="mat-button-secondary" mat-button (click)="continue()" [disabled]="disableAction()">{{data.yesButton}}</button>
+</div>

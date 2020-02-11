@@ -1,0 +1,88 @@
+{
+  "/apis/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/kong-loopback-basic",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {"Authorization":""}
+  },
+  "/acls/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/kong-loopback-basic",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {"Authorization":""}
+  },
+  "/consumers/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/kong-loopback-basic",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {"Authorization":""}
+  },
+  "/_search/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/apielk",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {"apikey":""}
+  },
+  "/payloads/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/athena/v1/",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {"apikey":""}
+  },
+  "/connect/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/athena/v1/",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {"apikey":"",
+      "isMemberOf": "enablement-team.its"
+    }
+  },
+  "/kafka/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/athena/v1/",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {"apikey":"",
+      "isMemberOf": "enablement-team.its"
+    }
+  },
+  "/users/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/athena/v1/",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {
+      "apikey":"",
+      "isMemberOf" : "enablement-team.its, hr-team.its",
+      "displayName": "User Full Name",
+      "uid": "User UPI"
+    }
+  },
+  "/metadata/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/athena/v1/",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {
+      "apikey": ""
+    }
+  },
+  "/uoa-springboot-starter/*": {
+    "target": "https://api.dev.auckland.ac.nz/service/",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/jenkins/*": {
+    "target":  "http://localhost:8989/athena/v1/",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {
+      "apikey": ""
+    }
+  },
+  "/bitbucket/*": {
+    "target":  "http://localhost:8989/athena/v1/",
+    "secure": false,
+    "logLevel": "debug",
+    "headers": {
+      "apikey": ""
+    }
+  }
+}

@@ -1,0 +1,177 @@
+<div class="container">
+
+  <div class="header mat-elevation-z1">
+    <div class="header-text">
+      <span class="head-marker">
+        <mat-icon>layers</mat-icon>Topic
+      </span>
+      {{topicName}}
+      <span class="spacer"></span>
+    </div>
+  </div>
+
+  <mat-card class="component" *ngIf="consumers">
+
+    <mat-card-header 
+      class="component-header">
+
+      <mat-card-title>
+        <mat-icon>whatshot</mat-icon>
+        <span 
+          matBadge="{{consumers ? consumers.length : 0}}" 
+          matBadgeSize="small" 
+          matBadgeOverlap="false">&nbsp;&nbsp;Consumers 
+        </span>
+      </mat-card-title>
+
+      <span class="spacer"></span>
+
+      <span 
+        class="loading" 
+        [ngClass]="consumersLoadProgress.type" 
+        *ngIf="consumersLoadProgress">{{consumersLoadProgress.msg}}
+      </span>
+
+      <span class="tool-bar">
+        <a 
+          class="link clickable"  
+          matTooltip="Refresh" 
+          (click)="refreshConsumers()">
+          <mat-icon>sync</mat-icon>
+        </a>
+      </span>
+
+      <span class="tool-bar">
+        <a 
+          class="link clickable"  
+          matTooltip="Show List"
+          (click)="showList('topicDropdown')">
+          <mat-icon>reorder</mat-icon>
+        </a>
+      </span>
+
+    </mat-card-header>
+
+    <mat-card-content 
+      class="scroll-panel"
+      *ngIf="topicDropdown">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Assigned Partition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="consumers?.length === 0">
+            <td>
+              No Consumers have been found
+            </td>
+          </tr>
+          <tr *ngFor="let consumer of consumers">
+            <td>
+              <a routerLink="/kafka/consumers/{{consumer.consumerName}}">{{consumer.consumerName}}</a>
+            </td>
+            <td *ngFor="let consumerPartition of consumer.partitions">
+              {{consumerPartition.partition}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+
+  </mat-card>
+
+  <mat-card 
+    class="component" 
+    *ngIf="partitions">
+
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>view_column</mat-icon>
+
+        <span 
+          matBadge="{{partitions ? partitions.length : 0}}" 
+          matBadgeSize="small" 
+          matBadgeOverlap="false">&nbsp;&nbsp;Partitions 
+        </span>
+
+      </mat-card-title>
+      <span class="spacer"></span>
+
+      <span 
+        class="loading" 
+        [ngClass]="topicLoadProgress.type" 
+        *ngIf="topicLoadProgress">{{topicLoadProgress.msg}}
+      </span>
+
+      <span class="tool-bar">
+        <a 
+          class="link clickable"  
+          matTooltip="Refresh" 
+          (click)="refreshTopics()"><mat-icon>sync</mat-icon></a>
+      </span>
+
+      <span class="tool-bar">
+        <a 
+          class="link clickable"  
+          matTooltip="Show List" 
+          (click)="showList('partitionDropdown')">
+          <mat-icon>reorder</mat-icon>
+        </a>
+      </span>
+
+    </mat-card-header>
+
+    <mat-card-content 
+      class="scroll-panel"
+      *ngIf="partitionDropdown">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Actions</th>
+            <th>Partition</th>
+            <th>Leader</th>
+            <th>Offset Start</th>
+            <th>Offset End</th>
+            <th>Size</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="partitions?.length === 0">
+            <td colspan="6">
+              No Partitions have been found
+            </td>
+          </tr>
+          <tr *ngFor="let partition of partitions">
+            <td>
+              <mat-icon
+                class="clickable"
+                matTooltip="Display messages in partition {{partition.partition}}"
+                (click)="selectPartition(partition.partition)"
+                routerLink="data/{{partition.partition}}"
+              >
+                mail_outline
+              </mat-icon>
+            </td>
+            <td>
+              {{partition.partition}}&nbsp;
+            </td>
+            <td>{{partition.leader}}</td>
+            <td>{{partition.offset.start}}</td>
+            <td>{{partition.offset.end}}</td>
+            <td>{{partition.offset.size}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Selected Partition data -->
+  <mat-card 
+    *ngIf="messageDropdown"
+    class="messages-component"
+    id="messages-panel">
+      <router-outlet></router-outlet>
+  </mat-card>
+</div>

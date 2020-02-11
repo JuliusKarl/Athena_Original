@@ -1,0 +1,139 @@
+<div class="page-container page-with-sub-nav">
+  <div class="container">
+    <div class="header mat-elevation-z1">
+
+      <div class="header-text">
+        <span class="head-marker"><mat-icon svgIcon="springboot-icon"></mat-icon></span>
+        Springboot Project Initializer
+        <span class="spacer"></span>
+        <span class="tool-bar">
+          <span class="loading" [ngClass]="developProgress.type" *ngIf="developProgress">
+            {{developProgress.msg}}</span>
+          <span class="bar-separator"></span>
+          <span matTooltip="Project Java version">Java {{javaVersion}}</span>
+          <span class="bar-separator"></span>
+          <span matTooltip="Project Springboot version">Springboot {{frameworkVersion}}</span>
+          <span class="bar-separator"></span>
+          <span matTooltip="Project Builder">Maven</span>
+        </span>
+      </div>
+    </div>
+
+    <mat-card class="scroll-panel" *ngIf="starterForm">
+        <mat-card-content>
+          <form [formGroup]="starterForm">
+          <table class="split-form">
+            <!--appType-->
+            <tr>
+              <td>? What type of application are you building</td>
+              <td>
+                <mat-form-field >
+                  <mat-select #appType  formControlName="appType" (selectionChange)="setDefaultDependencies($event)">
+                    <mat-option [value]="appType" *ngFor="let appType of appTypes">
+                      <span>{{appType}}</span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </td>
+            </tr>
+            <!--repoProject-->
+            <tr *ngIf="formService.hasDataFor('appType', starterForm)">
+              <td *ngIf="formService.valueIs('appType', AppType_API, starterForm)">? What is the ultimate source of data for this API</td>
+              <td *ngIf="formService.valueIs('appType', AppType_INTEGRATION, starterForm)">? What is the ultimate target for this Integration</td>
+              <td>
+                <mat-form-field class="split-form-input">
+                  <mat-select #project  formControlName="project">
+                    <mat-select-trigger>
+                      {{formService.getValue('project', starterForm)}}
+                    </mat-select-trigger>
+                    <mat-form-field class="select-search">
+                      <span matPrefix class="select-search-icon">
+                        <mat-icon>search</mat-icon>
+                      </span>
+                      <input  matInput #searchProject autocomplete="off">
+                    </mat-form-field>
+                    <mat-option *ngFor="let app of enterpriseApps
+                    | filter : 'name,commonName' : searchProject.value | sortBy: 'name' : 'asc' " [value]="app.name">
+                      {{app.name}}
+                      <div class="subNote">{{app.commonName}}</div>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                &nbsp;&nbsp;&nbsp;
+                <mat-form-field *ngIf="formService.valueIs('project','Other', starterForm)" class="split-form-input">
+                  <input type="text" matInput  formControlName="other" placeholder="New source name" autocomplete="off">
+                </mat-form-field>
+              </td>
+            </tr>
+            <!--version-->
+            <tr *ngIf="formService.valueIs('appType', AppType_API, starterForm) && isValidProject()">
+              <td>? What is the version of this API</td>
+              <td>
+                <mat-form-field class="split-form-input-small">
+                  <span matPrefix>V</span>
+                  <input type="text" matInput  formControlName="version" autocomplete="off">
+                </mat-form-field>
+              </td>
+            </tr>
+            <!--appName-->
+            <tr *ngIf="formService.valueIs('appType',AppType_API,starterForm) && formService.hasDataFor('version',starterForm) ||
+            formService.valueIsNot('appType',AppType_API, starterForm) && formService.hasDataFor('project',starterForm)">
+              <td>? What do you want to call the application</td>
+              <td>
+                <mat-form-field>
+                  <span matPrefix>{{formService.getValue('appType',starterForm).toLowerCase() + '-'}}</span>
+                  <input type="text" matInput  formControlName="appName" [placeholder]="getAppNamePlaceholder()" autocomplete="off">
+                  <span matSuffix *ngIf="formService.valueIs('appType',AppType_API,starterForm)">-v{{formService.getValue('version',starterForm)}}</span>
+                </mat-form-field>
+              </td>
+            </tr>
+            <!--repoName-->
+            <tr *ngIf="formService.hasDataFor('appName',starterForm)">
+              <td>Project and Repository name for this {{formService.getValue('appType',starterForm)}} will be</td>
+              <td>
+                <span class="capitalize">{{isOtherProject()? formService.getValue('other',starterForm) : formService.getValue('project',starterForm)}}</span> / {{getFullAppName()}}
+              </td>
+            </tr>
+            <!--dependencies-->
+            <tr  *ngIf="formService.hasDataFor('appName',starterForm)">
+              <td>Search dependencies to add &nbsp;&nbsp;&nbsp;
+                <mat-form-field  class="large-input">
+                  <span matPrefix><mat-icon>search</mat-icon></span>
+                  <input matInput [matAutocomplete]="dependency" [formControl]="dependencyCtrl">
+                  <mat-autocomplete #dependency (optionSelected)="dependencySelected($event)">
+                    <mat-option *ngFor="let dependency of dependencies | filter: 'name' : dependencyCtrl.value" [value]="dependency">
+                      {{dependency.name}}
+                      <div class="subNote">{{dependency.description}}</div>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-chip-list>
+                  <mat-chip
+                    *ngFor="let dependency of selectedDependencies"
+                    selectable="true"
+                    removable="true"
+                    (removed)="dependencyRemoved(dependency)"
+                    [matTooltip]="dependency.description">
+                    {{dependency.name}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                </mat-chip-list>
+              </td>
+            </tr>
+            <!--Generate-->
+            <tr *ngIf="formService.hasDataFor('appName',starterForm)">
+              <td></td>
+              <td>
+                <button mat-button (click)="generate()">Generate</button>
+              </td>
+            </tr>
+          </table>
+          </form>
+        </mat-card-content>
+      </mat-card>
+  </div>
+</div>
+

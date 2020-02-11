@@ -1,0 +1,53 @@
+<div fxLayout="row wrap" fxLayoutGap="1%">
+  <mat-card fxFlex="24%" *ngFor="let app of pipelines"  class="tile">
+    <mat-card-content  fxLayout="column" class="tile-wrapper">
+            <span class="tile-text">
+              {{app.appName}}
+              <a routerLink="/init/register/{{app.appName}}"
+                 class="subNote link clickable"
+                 matTooltip="Edit Registration details"
+                 *ngIf="nonProdAdminOnly()"
+              >
+                  <mat-icon>edit</mat-icon>
+                </a>
+            </span>
+      <span class="tile-text-small">Repository: <a href="{{app.repoUrl}}" matTooltip="{{app.repoUrl}}" target="_blank">{{app.repoUrl || 'Unknown'}}</a></span>
+      <span class="tile-text-small">Type: {{app.type || 'Unknown'}}</span>
+      <span class="tile-text-small">Value Stream: {{app.valueStreamGroup || 'Unknown'}}</span>
+      <span class="tile-text-small">ServiceNow Queue: {{app.serviceNowQueue?.name || 'Unknown'}}</span>
+      <span class="tile-text-small">Created by: {{app.creatorUpi || 'Unknown'}}</span>
+      <br>
+
+      <span *ngIf="!pipelineExists">
+        <!-- Initialize button -->
+        <div *ngIf="!app.deployProgress" class="mat-button mat-button-secondary" (click)="initializePipeline(app)">Initialize</div>
+        <!-- Link to build job-->
+        <!-- Progress -->
+        <mat-progress-bar  *ngIf="app.deployProgress && app.deployProgress.type==='info'" mode="indeterminate"></mat-progress-bar>
+        <span *ngIf="app.deployProgress && app.deployProgress.type!=='done'" [ngClass]="app.deployProgress.type">{{app.deployProgress?.message}}</span>
+        <a class="mat-button" *ngIf="app.deployProgress && app.deployProgress.type ==='done'"
+           [href]="app.deployProgress?.message + '/console'" target="_blank">
+          Check progress here...
+        </a>
+      </span>
+      <!-- Link to open existing job-->
+      <a *ngIf="pipelineExists" class="mat-button"
+         [href]="app.pipeline" target="_blank">
+        Open Pipeline
+      </a>
+    </mat-card-content>
+  </mat-card>
+</div>
+<mat-card *ngIf="!loadingProgress && pipelines?.length === 0">
+  <mat-card-content class="component-item  all-set">
+    <h2 *ngIf="pipelineExists">Nothing Here!</h2>
+    <h2 *ngIf="!pipelineExists">All Done!</h2>
+
+    <img *ngIf="pipelineExists" src="/assets/sad.png">
+    <img *ngIf="!pipelineExists" src="/assets/happy.png">
+
+    <span *ngIf="pipelineExists" class="all-set-text">No registered applications for <b>{{valueStream}}</b> have a pipeline.</span>
+    <span *ngIf="!pipelineExists" class="all-set-text">All registered applications for <b>{{valueStream}}</b> have a pipeline.</span>
+    <a routerLink="/">Check registered applications</a>
+  </mat-card-content>
+</mat-card>

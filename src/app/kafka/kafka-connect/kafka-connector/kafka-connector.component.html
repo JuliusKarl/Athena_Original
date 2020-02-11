@@ -1,0 +1,154 @@
+<div class="container">
+  <div class="header mat-elevation-z1">
+
+    <div class="header-text">
+      <span class="head-marker"><mat-icon matTooltip="Connector type {{connector?.type}}">
+        {{connectorIcon}}</mat-icon> {{connector?.type}} Connector</span>
+      {{connectorName}} &nbsp;&nbsp;&nbsp;&nbsp;
+      <mat-chip-list *ngIf="!connectorLoadProgress">
+        <mat-chip class="shrink" [ngClass]="getStateClass(connector?.health.state)">{{connector?.health.state}}</mat-chip>
+      </mat-chip-list>
+      <span class="spacer"></span>
+      <span class="loading" [ngClass]="connectorLoadProgress.type" *ngIf="connectorLoadProgress">{{connectorLoadProgress.msg}}</span>
+      <span class="tool-bar">
+        <a matTooltip="Delete connector."
+           class="link clickable"
+           [appEnableAction]="connectorName"
+           *ngIf="!connectorLoadProgress && isNonProd()"
+           (click)="deleteConnectorDialog()"><mat-icon>delete</mat-icon></a>
+        <a matTooltip="Pause connector. Kafka message will NOT be pushed to the target application {{targetApplication}}. Messages would remain in the queue."
+           class="link clickable"
+           [appEnableAction]="connectorName"
+           *ngIf="!connectorLoadProgress && connector?.health.state === 'RUNNING'"
+           (click)="pauseConnector()"><mat-icon>pause</mat-icon></a>
+        <a matTooltip="Start connector. Kafka message will be pushed to the target application {{targetApplication}}."
+           class="link clickable"
+           [appEnableAction]="connectorName"
+           *ngIf="!connectorLoadProgress && connector?.health.state === 'PAUSED'"
+           (click)="resumeConnector()"><mat-icon>play_arrow</mat-icon></a>
+        <span class="bar-separator"  *ngIf="!connectorLoadProgress" ></span>
+        <a matTooltip="Check payload that would be sent by {{targetApplication}} to target application."
+           class="link clickable"
+           [appEnableAction]="connectorName"
+           *ngIf="!connectorLoadProgress"
+           routerLink="check-payload/{{targetApplication}}"><mat-icon svgIcon="check-payload-icon"></mat-icon></a>
+        <a matTooltip="Publish messages to {{targetApplication}} to trigger integration with target application."
+           class="link clickable"
+           [appEnableAction]="connectorName"
+           *ngIf="!connectorLoadProgress"
+           routerLink="publish-messages/{{targetApplication}}"><mat-icon svgIcon="publish-message-icon"></mat-icon></a>
+        <span class="bar-separator" ></span>
+        <a matTooltip="Refresh" class="link clickable"  (click)="refresh()"><mat-icon>sync</mat-icon></a>
+      </span>
+    </div>
+  </div>
+
+  <mat-card class="component" *ngIf="connector">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>list</mat-icon>&nbsp;&nbsp;Tasks
+      </mat-card-title>
+      <span class="spacer"></span>
+      <span class="loading" [ngClass]="taskLoadProgress.type" *ngIf="taskLoadProgress">{{taskLoadProgress.msg}}</span>
+    </mat-card-header>
+    <mat-card-content>
+      <div >
+        <div *ngIf="connector.health.tasks.length === 0">
+          This connector does not have any tasks.
+        </div>
+
+        <div class="task mat-elevation-z1" [ngClass]="getStateClass(task.state)" *ngFor="let task of connector.health.tasks">
+
+            Task-{{task.taskId}}<div class="subNote">{{task.state}}</div>
+
+            <div class="task-actions" >
+              <a matTooltip='Restart Task' class="link clickable" [appEnableAction]="connectorName" (click)="restartTask(task.taskId)" *ngIf="taskLoadProgress == null">
+                <mat-icon>refresh</mat-icon>
+              </a>
+              <a matTooltip='Show Error Details' class="link clickable" *ngIf="task.state === 'FAILED'" (click)="showError(task)">
+                <mat-icon>bug_report</mat-icon>
+              </a>
+            </div>
+        </div>
+
+        <div class="info-secondary container error-text" *ngIf="taskError!=null">
+          <a (click)="hideError()" class="clickable close" matTooltip="Close"><mat-icon>cancel</mat-icon></a>
+          <div>
+            <b>Task-{{taskError.taskId}} trace:</b>
+          </div>
+          {{taskError.trace}}
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div fxLayout="row" fxLayoutGap="15px" *ngIf="connector">
+    <mat-card fxFlex="auto" *ngIf="targetApplication">
+      <mat-card-header class="component-header">
+        <mat-card-title>
+          <mat-icon>gps_fixed</mat-icon>&nbsp;&nbsp;Target Application &nbsp;
+        </mat-card-title>
+        <span class="spacer"></span>
+      </mat-card-header>
+      <mat-card-content class="component-item component-item-flex">
+        {{targetApplication}}
+        &nbsp;&nbsp;&nbsp;
+        <a href="{{apiLogUrl}}" target="_blank" rel="noopener noreferrer" matTooltip="See {{targetApplication}} logs in Kibana">
+          <mat-icon svgIcon="kibana-icon"></mat-icon>
+        </a>
+      </mat-card-content>
+    </mat-card>
+    <mat-card  fxFlex="auto">
+      <mat-card-header class="component-header">
+        <mat-card-title>
+          <mat-icon>whatshot</mat-icon>Uses Consumer
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="component-item component-item-flex">
+        <a routerLink="../../consumers/connect-{{connectorName}}">connect-{{connectorName}}</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="{{connectorLogUrl}}" target="_blank" rel="noopener noreferrer" matTooltip="See connect-{{connectorName}} logs in Kibana">
+          <mat-icon svgIcon="kibana-icon"></mat-icon>
+        </a>
+      </mat-card-content>
+    </mat-card>
+    <mat-card fxFlex="auto">
+      <mat-card-header class="component-header">
+        <mat-card-title>
+          <mat-icon>layers</mat-icon>&nbsp;&nbsp;Topics Subscribed
+        </mat-card-title>
+        <span class="spacer"></span>
+      </mat-card-header>
+      <mat-card-content>
+        <ul class="list-vertical" fxLayoutGap="15px">
+          <li *ngFor="let topic of connector.config['topics'].split(',')"><a routerLink="../../topics/{{topic}}">
+            {{topic}}
+          </a></li>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <mat-card class="component">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>settings</mat-icon>&nbsp;&nbsp;Configuration
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="scroll-panel">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let entry of connector?.config | keyvalue">
+          <td>{{entry.key}}</td>
+          <td>{{entry.value}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

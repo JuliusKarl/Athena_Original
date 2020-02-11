@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="paper mat-elevation-z1">
+    <!--<span class="paper-msg" [ngClass]="msg.type" *ngIf="msg">{{msg.msg}}</span>-->
+    <div class="paper-details-block">
+      <table class="paper-details">
+        <tr >
+          <td colspan="2" class="paper-title" >
+            Core Applications
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="core-app-container">
+      <a class="coreApp" routerLink="../{{coreApp}}" *ngFor="let coreApp of coreApps">
+        <div class="coreApp-title" >{{coreApp}}</div>
+        <div class="coreApp-sub-title" >core</div>
+      </a>
+    </div>
+  </div>
+</div>

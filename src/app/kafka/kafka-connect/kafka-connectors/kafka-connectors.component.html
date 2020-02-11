@@ -1,0 +1,71 @@
+   <div class="header mat-elevation-z1">
+      <div class="header-text">
+        <div class="head-marker"><mat-icon>usb</mat-icon></div>Connectors
+        <span class="spacer"></span>
+        <a 
+          matTooltip="Refresh" 
+          class="link clickable"  
+          (click)="refreshList()">
+          <mat-icon>sync</mat-icon></a>&nbsp;&nbsp;&nbsp;
+        <a 
+          matTooltip="Connect home" 
+          class="link clickable"  
+          routerLink="../connect"><mat-icon>home</mat-icon></a>&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+    <div class="card-header  mat-elevation-z1">
+      <mat-card-title>
+        <mat-icon>search</mat-icon>
+      </mat-card-title>
+      <div class="card-header-search">
+        <input 
+          type="search" 
+          class="input" 
+          matInput 
+          [(ngModel)]="searchText" 
+          placeholder="Search by connector name" >
+      </div>
+    </div>
+    <mat-card class="scroll-panel">
+      <span 
+        class="loading" 
+        *ngIf="loading">Loading data ...</span>
+      <span 
+        class="loading error" 
+        *ngIf="errorWhileLoading">Unable to load data.</span>
+      <mat-card-content>
+        <mat-accordion 
+          multi="true" 
+          displayMode="flat">
+          <mat-expansion-panel 
+            *ngFor="let type of connectorMap | keyvalue" 
+            expanded="true">
+            <mat-expansion-panel-header class="panel-header">
+              <mat-icon>space_bar</mat-icon>&nbsp;&nbsp;&nbsp;{{type.key}} connectors
+              &nbsp;&nbsp;&nbsp;
+              <mat-chip-list>
+                <mat-chip  matTooltip="Total {{type.key}} connectors">{{type.value ? type.value.length : 0}}</mat-chip>
+              </mat-chip-list>
+            </mat-expansion-panel-header>
+            <mat-nav-list class="panel-list">
+              <a 
+                class="list-item" 
+                matLine 
+                *ngFor="let connector of type.value | sortBy: 'name': 'asc' | filter : 'name' :searchText" 
+                [routerLink]="[connector.name]" 
+                routerLinkActive="active">
+                {{ connector.name }}
+                <span class="spacer"></span>
+                <div class="status-row">
+                  <div 
+                      [ngClass]="getStateClass(connector)" 
+                      matTooltip="Connector {{connector.health.state}}">
+                  </div>
+                </div>
+
+              </a>
+            </mat-nav-list>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </mat-card-content>
+    </mat-card>

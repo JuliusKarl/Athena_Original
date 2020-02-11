@@ -1,0 +1,128 @@
+
+svg{
+  display: flex;
+  margin: auto;
+  background: #fff;
+  box-sizing: border-box;
+}
+.svg-text{
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+.svg-sub-text{
+  font-size: 0.6rem;
+  text-transform: uppercase;
+}
+
+.app{
+  fill: #fff;
+  stroke:#000;
+  stroke-width:2;
+}
+.app-link{
+  text-decoration: none;
+  cursor: pointer;
+}
+.app-link:hover{
+  stroke-dasharray: 2
+}
+.app-link image{
+  outline: none;
+}
+.app-text{
+  fill: #000;
+}
+.app-action{
+  width: 20px;
+  cursor: default!important;
+}
+.app-action-link{
+  cursor: pointer!important;
+}
+
+.core-app{
+  fill: #4080ff;
+  stroke:#000;
+  stroke-width:2;
+}
+.core-app-text{
+  fill: #fff;
+}
+
+
+.line{
+  width: 20px;
+  height: 2px;
+  display: inline-flex;
+}
+.line.in{
+  background: blue;
+}
+.line.out{
+  background: red;
+}
+.connection-line{
+  stroke: #000;
+  stroke-width:2;
+  fill: #000;
+}
+.arch-line{
+  stroke: #000;
+  stroke-width:2;
+  fill: none;
+}
+.in{
+  stroke: blue;
+}
+.out{
+  stroke: red;
+}
+.queue{
+  fill: #edf6f8;
+  stroke: #67b1c6;
+  stroke-width: 2;
+}
+.queue-text{
+  fill: #67b1c6;
+}
+.connector-app{
+  fill: #edf6f8;
+  stroke:#67b1c6;
+  stroke-width:2;
+}
+.connector-app-text{
+  fill: #67b1c6;
+}
+
+.other-app{
+  fill: #6f9092;
+}
+.other-text{
+  fill: #1e2e37;
+}
+.inbound-app{
+  fill: #ffdad0;
+  stroke:#fb5d42;
+  stroke-width:2;
+}
+.inbound-app-text{
+  fill: #fb5d42;
+}
+.outbound-app{
+  fill: #d7bccf;
+  stroke:#543e84;
+  stroke-width:2;
+}
+.outbound-app-text{
+  fill: #543e84;
+}
+
+.consumer > .outbound-app{
+  fill: #abb8b9;
+  stroke:#373d3f;
+  stroke-width:2;
+}
+.consumer > .outbound-app-text{
+  fill: #373d3f;
+}

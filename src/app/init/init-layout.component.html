@@ -1,0 +1,20 @@
+<nav mat-tab-nav-bar>
+  <a mat-tab-link routerLink="develop" routerLinkActive="active">
+    <mat-icon svgIcon="develop-icon"></mat-icon>
+    &nbsp;Develop
+  </a>
+  <a mat-tab-link routerLink="register" routerLinkActive="active" *ngIf="nonProdAdminOnly()">
+    <mat-icon svgIcon="register-icon"></mat-icon>
+    Register
+  </a>
+  <a mat-tab-link routerLink="deploy" routerLinkActive="active" *ngIf="nonProdAdminOnly()">
+    <mat-icon svgIcon="deploy-icon"></mat-icon>
+    Deploy
+  </a>
+  <!--<a mat-tab-link routerLink="monitor" routerLinkActive="active" *ngIf="nonProdAdminOnly()">-->
+    <!--<mat-icon svgIcon="monitor-icon"></mat-icon>-->
+    <!--Monitor-->
+  <!--</a>-->
+</nav>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,51 @@
+<div class="page-container page-with-sub-nav">
+  <div class="container">
+    <div class="header mat-elevation-z1">
+      <div class="header-text">
+        <span class="head-marker"><mat-icon svgIcon="deploy-icon"></mat-icon></span>
+        <span matBadge="{{noPipelineApps?.length}}" matBadgeSize="small" matBadgeOverlap="false">
+          Initialize Jenkins Cloud Pipelines
+        </span>
+        <span class="spacer"></span>
+        <span class="tool-bar">
+          <span class="loading" [ngClass]="loadingProgress.type" *ngIf="loadingProgress">
+            {{loadingProgress.message}}</span>
+        </span>
+        <span class="tool-bar">
+          <a class="link clickable"  matTooltip="Refresh" (click)="refresh()"><mat-icon>sync</mat-icon></a>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <app-pipeline-card [pipelines]=noPipelineApps [pipelineExists]="false"
+                       [valueStream]="valueStream"
+                       [loadingProgress]="loadingProgress"
+    ></app-pipeline-card>
+  </div>
+  <div class="container">
+    <div class="header mat-elevation-z1">
+      <div class="header-text">
+        <span class="head-marker"><mat-icon svgIcon="deploy-icon"></mat-icon></span>
+        <span matBadge="{{pipelineApps?.length}}" matBadgeSize="small" matBadgeOverlap="false">
+          Existing Jenkins Cloud Pipelines
+        </span>
+        <span class="spacer"></span>
+        <span class="tool-bar">
+          <span class="loading" [ngClass]="loadingProgress.type" *ngIf="loadingProgress">
+            {{loadingProgress.message}}</span>
+        </span>
+        <span class="tool-bar">
+          <a class="link clickable"  matTooltip="Refresh" (click)="refresh()"><mat-icon>sync</mat-icon></a>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+      <app-pipeline-card [pipelines]=pipelineApps [pipelineExists]="true"
+                         [valueStream]="valueStream"
+                         [loadingProgress]="loadingProgress"
+      ></app-pipeline-card>
+  </div>
+</div>
+

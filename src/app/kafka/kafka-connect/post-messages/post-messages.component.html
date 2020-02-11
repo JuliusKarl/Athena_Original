@@ -1,0 +1,96 @@
+<div class="container">
+  <div class="header mat-elevation-z1">
+
+    <div class="header-text">
+
+      <span class="head-marker">
+        <mat-icon svgIcon="publish-message-icon"></mat-icon>&nbsp;
+        Publish Messages
+      </span>
+
+      {{targetApplication}}
+
+      <span class="spacer"></span>
+
+      <span class="tool-bar">
+        <a matTooltip="Go Back" class="link clickable" routerLink="../.."><mat-icon>keyboard_return</mat-icon></a>
+      </span>
+    </div>
+  </div>
+
+  <mat-card class="component" *ngIf="integrationUrl">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>gps_fixed</mat-icon>&nbsp;&nbsp;HTTP Request
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="component-item">
+      {{integrationUrl}}
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="component" *ngIf="integrationUrl">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>layers</mat-icon>&nbsp;&nbsp;Topic
+        <mat-icon>chevron_right</mat-icon>
+        <strong>Select topic you want to simulate the message is from</strong>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="component-item">
+        <mat-select [(ngModel)]="topicName" (selectionChange)="setSampleMessages()">
+          <mat-option
+            *ngFor="let topic of topics"
+            [value]="topic">
+            <span>{{topic}}</span>
+          </mat-option>
+        </mat-select>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="component">
+    <mat-card-header class="component-header">
+      <mat-card-title>
+        <mat-icon>email</mat-icon>&nbsp;&nbsp;Messages
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="component-item">
+        <div class="message-input">
+          <div class="message-input-form">
+            <mat-form-field floatLabel="never" class="mat-form-field-full">
+          <textarea #allMessages matInput class="messages-text-area"
+                    [formControl]="messagesFormControl"></textarea>
+              <mat-error *ngIf="messagesFormControl.hasError('required')">At least one message is required.</mat-error>
+              <mat-error *ngIf="messagesFormControl.hasError('messagesCountExceeded')">
+                You can only send {{maxPublishMsgCount}} messages at a time.
+                Total messages found: {{messagesFormControl.errors['messagesCountExceeded'].messagesCount}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="message-input-instructions-wrapper">
+            <mat-icon>help</mat-icon>
+            <div class="message-input-instructions">
+              Enter messages delimited by a newline.<br>
+              You can publish <b>Max. {{maxPublishMsgCount}}</b> messages at a time.
+              <br><b>Note:</b> The integration will send the payload to the target system.
+              <br><br>
+              <b>Sample payload:</b><br>
+              <div *ngFor="let message of sampleMessages">
+                {{message}}
+              </div>
+              <div *ngIf="err" class="error-text">
+                {{err}}
+              </div>
+              <div class="subNote">
+                If you want to trigger the integration without actually sending the payload to the target system use
+                &nbsp;<a routerLink="../../check-payload/{{targetApplication}}">Check Payload</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button mat-button (click)="publishConfirmDialog(allMessages.value)"
+                [disabled]="this.messagesFormControl.errors">Submit</button>
+    </mat-card-content>
+  </mat-card>
+
+</div>

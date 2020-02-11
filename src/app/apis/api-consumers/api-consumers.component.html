@@ -1,0 +1,108 @@
+<mat-card class="component">
+  <mat-card-header class="component-header">
+    <mat-card-title><mat-icon>data_usage</mat-icon>
+      &nbsp;&nbsp;Total Usage
+    </mat-card-title>
+    <span class="spacer"></span>
+    <span class="loading" *ngIf="loadingConsumers">Loading data ...</span>
+    <span class="loading error" *ngIf="loadingConsumersErr">Unable to load data.</span>
+    <mat-icon class="link clickable" (click)="getApiConsumption(apiName)">refresh</mat-icon>
+  </mat-card-header>
+  <table class="table">
+    <tr>
+      <th>
+        Total
+      </th>
+      <th>
+        This Month
+      </th>
+      <th>
+        Last Month
+      </th>
+      <th>
+        Before
+      </th>
+    </tr>
+    <tr class="table-summary">
+      <td class="huge">
+        {{summaryStats.total | number}}
+      </td>
+      <td>
+        {{summaryStats.thisMonth | number}}
+      </td>
+      <td>
+        {{summaryStats.lastMonth | number}}
+      </td>
+      <td>
+        {{summaryStats.beforeLastMonth | number}}
+      </td>
+    </tr>
+  </table>
+</mat-card>
+<mat-card class="component">
+  <mat-card-header class="component-header">
+    <mat-card-title><mat-icon>person</mat-icon>
+        <span matBadge="{{consumers ? consumers.length : 0}}" matBadgeSize="small" matBadgeOverlap="false">&nbsp;&nbsp;Consumers </span>
+    </mat-card-title>
+    <span class="spacer"></span>
+    <span class="loading" *ngIf="loadingConsumers">Loading data ...</span>
+    <span class="loading error" *ngIf="loadingConsumersErr">Unable to load data.</span>
+    <mat-icon class="link clickable" (click)="getApiConsumption(apiName)">refresh</mat-icon>
+  </mat-card-header>
+   <table class="table">
+      <tr>
+        <th>
+          Consumer Name
+        </th>
+        <th>
+          Total
+        </th>
+        <th>
+          This Month
+        </th>
+        <th>
+          Last Month
+        </th>
+        <th>
+          Before
+        </th>
+      </tr>
+      <tr *ngFor="let consumer of consumers">
+        <td>
+          {{consumer.name}} <span class="subNote" *ngIf="consumer.custom_id"><mat-icon>perm_identity</mat-icon>{{consumer.custom_id}}</span>
+        </td>
+        <td>
+          {{consumerStats[consumer.name] ? (consumerStats[consumer.name].total | number) : ""}}
+          <span class="percent" *ngIf="consumerStats[consumer.name]">
+            {{((consumerStats[consumer.name].total / summaryStats.total) * 100) | number:'1.1' }}%
+          </span>
+        </td>
+        <td>
+          {{consumerStats[consumer.name] ? (consumerStats[consumer.name].thisMonth | number)
+          : ""}}
+          <span class="percent" *ngIf="consumerStats[consumer.name]">
+            {{((consumerStats[consumer.name].thisMonth / summaryStats.thisMonth) * 100) | number:'1.1' }}%
+          </span>
+        </td>
+        <td>
+          {{consumerStats[consumer.name] ? (consumerStats[consumer.name].lastMonth | number)
+          : ""}}
+          <span class="percent" *ngIf="consumerStats[consumer.name]">
+            {{((consumerStats[consumer.name].lastMonth / summaryStats.lastMonth) * 100) | number:'1.1' }}%
+          </span>
+        </td>
+        <td>
+          {{consumerStats[consumer.name] ? (consumerStats[consumer.name].beforeLastMonth | number)
+          : ""}}
+          <span class="percent" *ngIf="consumerStats[consumer.name]">
+            {{((consumerStats[consumer.name].beforeLastMonth / summaryStats.beforeLastMonth) * 100) | number:'1.1' }}%
+          </span>
+        </td>
+      </tr>
+     <tr *ngIf="consumers.length === 0">
+        <td colspan="5">
+          None
+        </td>
+     </tr>
+    </table>
+</mat-card>

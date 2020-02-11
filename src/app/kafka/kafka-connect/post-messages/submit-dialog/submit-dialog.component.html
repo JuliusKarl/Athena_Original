@@ -1,0 +1,41 @@
+<div mat-dialog-title [ngClass]="{'success':data.success, 'error': !data.success}">
+  Post Messages <span class="bar-separator"></span>
+  <span *ngIf="data.success">SUCCESS!</span>
+  <span *ngIf="!data.success">FAILURE!</span>
+</div>
+
+<div mat-dialog-content>
+
+  <div *ngIf="data.success">
+    <p>Messages will be asynchronously sent to the Integration API.</p>
+    <p>Please check integration logs in
+      <a
+        matTooltip="Link to check logs in Kibana for the result of message posting"
+        class="logsLink link clickable"
+        target="_blank" rel="noopener noreferrer"
+        href="{{data.logsUrl}}">
+       Kibana <mat-icon>zoom_in</mat-icon>
+      </a>
+    </p>
+    <p>You will be redirected to the Connector details page when you close this popup.</p>
+  </div>
+
+  <div *ngIf="!data.success">
+    <p>Failed to send messages to the Integration API.</p>
+
+    <p *ngIf="!data.error.messages">
+      {{data.error.message}}
+    </p>
+
+    <div *ngIf="data.error.messages">
+      Cause:
+      <ul *ngFor="let errMsg of data.error.messages">
+        <li>{{errMsg}}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCloseClick()">Close</button>
+</div>
